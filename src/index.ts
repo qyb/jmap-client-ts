@@ -30,6 +30,8 @@ import {
   IEmailImportResponse,
   IThreadGetArguments,
   IThreadGetResponse,
+  ILimitedCalls,
+  ILimitedResponses,
 } from './types';
 
 export class Client {
@@ -206,5 +208,31 @@ export class Client {
 
   private getCapabilities() {
     return this.session?.capabilities ? Object.keys(this.session.capabilities) : this.DEFAULT_USING;
+  }
+
+  public limitedMethods(requests: IInvocation<ILimitedCalls>[]): Promise<ILimitedResponses[]> {
+    return this.transport
+      .post<{
+        sessionState: string;
+        methodResponses: IInvocation<ILimitedResponses>[];
+      }>(
+        this.getSession().apiUrl,
+        {
+          using: this.getCapabilities(),
+          methodCalls: requests,
+        },
+        this.httpHeaders,
+      )
+      .then(response => {
+        const result: Array<ILimitedResponses> = [];
+        response.methodResponses.forEach((item, index) => {
+          if (item[0] === 'error') {
+            throw [index, item[1]];
+          } else {
+            result.push(item[1]);
+          }
+        });
+        return result;
+      });
   }
 }

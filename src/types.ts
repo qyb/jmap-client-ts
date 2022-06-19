@@ -41,6 +41,11 @@ export type IArguments =
   | ISetArguments<IEntityProperties>
   | IQueryArguments<IEmailFilterCondition>
   | IChangesArguments;
+
+export type ILimitedCalls = IEmailQueryArguments | IEmailGetArguments | IThreadGetArguments;
+
+export type ILimitedResponses = IEmailQueryResponse | IEmailGetResponse | IThreadGetResponse;
+
 export interface IReplaceableAccountId {
   /**
    * If null, the library will replace its value by default account id.
