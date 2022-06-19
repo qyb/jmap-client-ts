@@ -154,7 +154,9 @@ export interface IQueryResponse {
   limit?: number;
 }
 
-export type IEmailQueryArguments = IQueryArguments<IEmailFilterCondition>;
+export type IEmailQueryArguments = IQueryArguments<IEmailFilterCondition> & {
+  collapseThreads?: boolean;
+};
 
 export type IEmailQueryResponse = IQueryResponse;
 
