@@ -104,6 +104,18 @@ export class Client {
     return accountIds[0];
   }
 
+  public getPersonalAccountId(): string {
+    const session = this.getSession();
+
+    for (const account in session.accounts) {
+      if (session.accounts[account].isPersonal) {
+        return account;
+      }
+    }
+
+    throw new Error('No account available for this session');
+  }
+
   public mailbox_get(args: IMailboxGetArguments): Promise<IMailboxGetResponse> {
     return this.request<IMailboxGetResponse>('Mailbox/get', args);
   }
