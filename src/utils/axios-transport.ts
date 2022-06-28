@@ -1,4 +1,9 @@
-import type { AxiosStatic, AxiosRequestConfig, AxiosResponse } from 'axios';
+import type {
+  AxiosStatic,
+  AxiosRequestConfig,
+  AxiosResponse,
+  ResponseType as _ResponseType,
+} from 'axios';
 import { Transport } from './transport';
 
 export class AxiosTransport implements Transport {
@@ -31,8 +36,17 @@ export class AxiosTransport implements Transport {
 
   get<ResponseType>(url: string, headers: { [headerName: string]: string }): Promise<ResponseType> {
     return new Promise<ResponseType>((resolve, reject) => {
+      let responseType: _ResponseType = 'blob'; // axios only support `blob` in browser
+      for (const [name, value] of Object.entries(headers)) {
+        if (name == 'Accept' && value.startsWith('application/json')) {
+          responseType = 'json';
+          break;
+        }
+      }
+
       const options: AxiosRequestConfig = {
         headers,
+        responseType,
       };
 
       this.axios

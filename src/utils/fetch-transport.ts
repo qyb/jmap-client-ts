@@ -8,10 +8,14 @@ type Fetch = (
     headers: { [header: string]: string };
   },
 ) => Promise<Response>;
+/* in VSCode, including Response definition will cause type-checking warning
 type Response = {
   status: number;
+  headers: Headers;
   json: () => any;
+  blob: () => Blob;
 };
+*/
 export class FetchTransport implements Transport {
   private fetch: Fetch;
 
@@ -58,7 +62,11 @@ export class FetchTransport implements Transport {
       if (response.status !== 200) {
         throw new Error(`Request failed, got http status code ${response.status}`);
       }
-      return response.json();
+      if (response.headers.get('content-type')?.startsWith('application/json')) {
+        return response.json();
+      } else {
+        return response.blob();
+      }
     });
   }
 }

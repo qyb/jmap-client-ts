@@ -195,6 +195,22 @@ export class Client {
     );
   }
 
+  public download(accountId: string, blobId: string, fname: string, type: string): Promise<Blob> {
+    const downloadUrl = this.session?.downloadUrl;
+    if (!downloadUrl) {
+      throw new Error('No downloadUrl available for this session');
+    }
+    const url = downloadUrl
+      .replace('{accountId}', encodeURIComponent(accountId))
+      .replace('{blobId}', encodeURIComponent(blobId))
+      .replace('{name}', encodeURIComponent(fname))
+      .replace('{type}', encodeURIComponent(type));
+
+    const requestHeaders = { ...this.httpHeaders };
+    delete requestHeaders.Accept;
+    return this.transport.get(url, requestHeaders);
+  }
+
   private request<ResponseType>(methodName: IMethodName, args: IArguments) {
     const apiUrl = this.overriddenApiUrl || this.getSession().apiUrl;
     return this.transport

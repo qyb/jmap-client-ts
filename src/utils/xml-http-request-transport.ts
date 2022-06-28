@@ -37,17 +37,25 @@ export class XmlHttpRequestTransport implements Transport {
   }): Promise<ResponseType> {
     return new Promise((resolve, reject) => {
       const request = this.xmlHttpRequestConstructor();
+      request.responseType = 'blob';
 
       request.open(method, url);
 
       for (const [name, value] of Object.entries(headers)) {
         request.setRequestHeader(name, value);
+        if (name == 'Accept' && value.startsWith('application/json')) {
+          request.responseType = 'text';
+        }
       }
 
       request.onload = () => {
         const status = request.status;
         if (status === 200) {
-          resolve(JSON.parse(request.responseText));
+          if (request.responseType == 'text') {
+            resolve(JSON.parse(request.responseText));
+          } else {
+            resolve(request.response);
+          }
         } else {
           reject(new Error(`Request failed, got http status code ${status}`));
         }
