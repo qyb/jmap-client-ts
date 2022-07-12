@@ -183,7 +183,7 @@ export class Client {
 
   public upload(buffer: ArrayBuffer, type = 'application/octet-stream'): Promise<IUploadResponse> {
     const uploadUrl = this.getSession().uploadUrl;
-    const accountId = this.getFirstAccountId();
+    const accountId = this.getPrimaryAccountId();
     const requestHeaders = {
       ...this.httpHeaders,
       'Content-Type': type,
@@ -241,7 +241,7 @@ export class Client {
       ? input
       : {
           ...input,
-          accountId: this.getFirstAccountId(),
+          accountId: this.getPrimaryAccountId(),
         };
   }
 
