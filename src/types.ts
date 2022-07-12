@@ -378,7 +378,7 @@ export interface IMailboxProperties {
   totalThreads: number;
   unreadThreads: number;
   myRights: IMailboxRights;
-  isSubscribed: false;
+  isSubscribed: boolean;
 }
 
 export type IMailboxGetArguments = IGetArguments<IMailboxProperties>;
