@@ -94,7 +94,9 @@ export class Client {
     return Object.keys(session.accounts);
   }
 
-  // Obsoleted by: getPrimaryAccountId
+  /**
+   * @deprecated Obsoleted by: getPrimaryAccountId
+   */
   public getFirstAccountId(): string {
     const accountIds = this.getAccountIds();
 
@@ -105,26 +107,12 @@ export class Client {
     return accountIds[0];
   }
 
-  // Obsoleted by: getPrimaryAccountId
-  public getPersonalAccountId(): string {
-    const session = this.getSession();
-
-    for (const account in session.accounts) {
-      if (session.accounts[account].isPersonal) {
-        return account;
-      }
-    }
-
-    throw new Error('No account available for this session');
-  }
-
   public getPrimaryAccountId(capability = 'urn:ietf:params:jmap:mail'): string {
-    const primaryAccounts = this.session?.primaryAccounts;
+    const primaryAccounts = this.getSession().primaryAccounts;
     if (primaryAccounts && capability in primaryAccounts) {
       return primaryAccounts[capability];
     }
-
-    throw new Error('No account available for this session');
+    throw new Error('No primary account available for $capability in this session');
   }
 
   public mailbox_get(args: IMailboxGetArguments): Promise<IMailboxGetResponse> {
