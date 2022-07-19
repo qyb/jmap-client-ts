@@ -56,16 +56,16 @@ export class FetchTransport implements Transport {
   }): Promise<ResponseType> {
     return this.fetch(url, {
       method,
-      body: JSON.stringify(body),
+      body: Buffer.isBuffer(body) ? body : JSON.stringify(body),
       headers: headers,
     }).then(response => {
-      if (response.status !== 200) {
+      if (response.status !== 200 && response.status !== 201) {
         throw new Error(`Request failed, got http status code ${response.status}`);
       }
       if (response.headers.get('content-type')?.startsWith('application/json')) {
         return response.json();
       } else {
-        return response.blob();
+        return response.arrayBuffer();
       }
     });
   }

@@ -183,7 +183,12 @@ export class Client {
     );
   }
 
-  public download(accountId: string, blobId: string, fname: string, type: string): Promise<Blob> {
+  public download(
+    accountId: string,
+    blobId: string,
+    fname: string,
+    type: string,
+  ): Promise<ArrayBuffer> {
     const downloadUrl = this.session?.downloadUrl;
     if (!downloadUrl) {
       throw new Error('No downloadUrl available for this session');

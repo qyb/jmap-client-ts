@@ -36,7 +36,7 @@ export class AxiosTransport implements Transport {
 
   get<ResponseType>(url: string, headers: { [headerName: string]: string }): Promise<ResponseType> {
     return new Promise<ResponseType>((resolve, reject) => {
-      let responseType: _ResponseType = 'blob'; // axios only support `blob` in browser
+      let responseType: _ResponseType = 'arraybuffer'; // axios only support `blob` in browser
       for (const [name, value] of Object.entries(headers)) {
         if (name == 'Accept' && value.startsWith('application/json')) {
           responseType = 'json';

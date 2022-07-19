@@ -37,7 +37,7 @@ export class XmlHttpRequestTransport implements Transport {
   }): Promise<ResponseType> {
     return new Promise((resolve, reject) => {
       const request = this.xmlHttpRequestConstructor();
-      request.responseType = 'blob';
+      request.responseType = 'arraybuffer';
 
       request.open(method, url);
 
@@ -50,7 +50,7 @@ export class XmlHttpRequestTransport implements Transport {
 
       request.onload = () => {
         const status = request.status;
-        if (status === 200) {
+        if (status === 200 || status === 201) {
           if (request.responseType == 'text') {
             resolve(JSON.parse(request.responseText));
           } else {
