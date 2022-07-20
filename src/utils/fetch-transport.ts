@@ -54,9 +54,15 @@ export class FetchTransport implements Transport {
     body?: any;
     headers: { [headerName: string]: string };
   }): Promise<ResponseType> {
+    let hasJSONContentType = false;
+    for (const [name, value] of Object.entries(headers)) {
+      if (name == 'Content-Type' && value.startsWith('application/json')) {
+        hasJSONContentType = true;
+      }
+    }
     return this.fetch(url, {
       method,
-      body: Buffer.isBuffer(body) ? body : JSON.stringify(body),
+      body: hasJSONContentType ? JSON.stringify(body) : body,
       headers: headers,
     }).then(response => {
       if (response.status !== 200 && response.status !== 201) {

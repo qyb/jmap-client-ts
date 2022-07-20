@@ -41,10 +41,14 @@ export class XmlHttpRequestTransport implements Transport {
 
       request.open(method, url);
 
+      let hasJSONContentType = false;
       for (const [name, value] of Object.entries(headers)) {
         request.setRequestHeader(name, value);
         if (name == 'Accept' && value.startsWith('application/json')) {
           request.responseType = 'text';
+        }
+        if (name == 'Content-Type' && value.startsWith('application/json')) {
+          hasJSONContentType = true;
         }
       }
 
@@ -66,7 +70,11 @@ export class XmlHttpRequestTransport implements Transport {
       };
 
       if (body) {
-        request.send(JSON.stringify(body));
+        if (hasJSONContentType) {
+          request.send(JSON.stringify(body));
+        } else {
+          request.send(body);
+        }
       } else {
         request.send();
       }

@@ -65,6 +65,7 @@ export class Client {
     this.httpHeaders = {
       Accept: 'application/json;jmapVersion=rfc-8621',
       Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
       ...(httpHeaders ? httpHeaders : {}),
     };
   }
